@@ -1,0 +1,75 @@
+version: "2.1"
+
+networks:
+  backend:
+  frontend:
+
+services:
+  code-server:
+    build: ./
+    container_name: code-server
+    environment:
+      - PUID=1000
+      - PGID=1000
+    #      - TZ=Europe/London
+    #      - PASSWORD=password #optional
+    #      - SUDO_PASSWORD=password #optional
+    #      - PROXY_DOMAIN=code-server.my.domain #optional
+    volumes:
+      - ./config:/config
+    #      - ./docker/Core_food/php/cli/php.ini:/etc/php/7.4/cli/php.ini
+    ports:
+      - 8443:8443
+    restart: unless-stopped
+
+  ##  From the docker-compose.yml of Core_food
+  # web-server
+  web-server:
+    container_name: nginx
+    networks:
+      - frontend
+      - backend
+    image: nginx:1.17
+    ports:
+      - "${HTTPS_PORT}:443"
+      - "${HTTP_PORT}:80"
+    volumes:
+      - ./docker/Core_food/log/nginx:/var/log/nginx
+      - ./docker/Core_food/nginx/conf:/etc/nginx/conf.d
+      - ./docker/Core_food/ssl:/etc/ssl
+      - ./config/workspace/Core_food:/var/www/html/Core_food
+
+  # php-fpm
+  php-fpm:
+    build: docker/Core_food/php
+    container_name: php
+    networks:
+      - backend
+    #    image: php:7.3-fpm
+    expose:
+      - 9000
+    tty: true
+    volumes:
+      - ./docker/Core_food/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./docker/Core_food/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./docker/Core_food/php/php-fpm.d:/usr/local/etc/php-fpm.d
+      - ./docker/Core_food/ssl:/etc/ssl
+      - ./config/workspace/Core_food:/var/www/html/Core_food
+
+  # database
+  database:
+    container_name: mysql
+    networks:
+      - backend
+    ports:
+      - "3306:3306"
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./docker/Core_food/mysql/local.cnf:/etc/mysql/conf.d/local.cnf:ro
+      - ./docker/Core_food/mysql/data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: corefood
+      MYSQL_USER: core
+      MYSQL_PASSWORD: food
