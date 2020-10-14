@@ -17,5 +17,24 @@ docker run -p 8443:8443 -p 8080:8080 -it code-server bash
 
 `libonig-dev`：代替 mbstring
 
+
+#   xDebug for VSCode
+1. install the extension : 'felixfbecker.php-debug' 
+2. click 'Run' in SideBar
+3. add this slice into 'launch.json'
+```json
+        {
+            "name": "Listen for CodeServer",
+            "type": "php",
+            "request": "launch",
+            "port": 9000,
+            "pathMappings": {
+                "/var/www/html/${workspaceFolderBasename}": "${workspaceFolder}"
+            },
+        },
+```
+4. click 'start debugging' button
+
+
 #   Step
 //  TODO

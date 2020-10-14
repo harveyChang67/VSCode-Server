@@ -3,5 +3,6 @@
 .phpunit.result.cache
 
 .idea
+.vscode
 /config/
 *.key
