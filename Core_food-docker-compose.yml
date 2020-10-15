@@ -8,6 +8,9 @@ services:
   code-server:
     build: ./
     container_name: code-server
+    networks:
+      - frontend
+      - backend
     environment:
       - PUID=1000
       - PGID=1000
@@ -20,6 +23,8 @@ services:
     #      - ./docker/Core_food/php/cli/php.ini:/etc/php/7.4/cli/php.ini
     ports:
       - 8443:8443
+    expose:
+      - 9001
     restart: unless-stopped
 
   ##  From the docker-compose.yml of Core_food

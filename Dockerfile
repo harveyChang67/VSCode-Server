@@ -1,8 +1,6 @@
 FROM linuxserver/code-server
 
-RUN apt-get update -y && apt-get install -y openssl zip unzip git libonig-dev
-RUN apt-get install -y curl wget gnupg less lsof net-tools git apt-utils
-RUN apt-get install -y emacs
+RUN apt-get update -y && apt-get install -y zip unzip git libonig-dev
 
 RUN apt install -y software-properties-common
 RUN add-apt-repository ppa:ondrej/php

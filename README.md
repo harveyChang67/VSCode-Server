@@ -24,12 +24,12 @@ docker run -p 8443:8443 -p 8080:8080 -it code-server bash
 3. add this slice into 'launch.json'
 ```json
         {
-            "name": "Listen for CodeServer",
+            "name": "Listen for Core_food @ CodeServer",
             "type": "php",
             "request": "launch",
-            "port": 9000,
+            "port": 9001,
             "pathMappings": {
-                "/var/www/html/${workspaceFolderBasename}": "${workspaceFolder}"
+                "/var/www/html/Core_food": "${workspaceFolder}/Core_food"
             },
         },
 ```
