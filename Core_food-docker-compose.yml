@@ -11,23 +11,16 @@ services:
     networks:
       - frontend
       - backend
-    environment:
-      - PUID=1000
-      - PGID=1000
-    #      - TZ=Europe/London
-    #      - PASSWORD=password #optional
-    #      - SUDO_PASSWORD=password #optional
-    #      - PROXY_DOMAIN=code-server.my.domain #optional
     volumes:
-      - ./config:/config
-    #      - ./docker/Core_food/php/cli/php.ini:/etc/php/7.4/cli/php.ini
+      - ./project:/home/coder/project
+      - ./config/:/root/.config/
     ports:
       - 8443:8443
     expose:
       - 9001
+    command: --auth none
     restart: unless-stopped
 
-  ##  From the docker-compose.yml of Core_food
   # web-server
   web-server:
     container_name: nginx
@@ -42,7 +35,7 @@ services:
       - ./docker/Core_food/log/nginx:/var/log/nginx
       - ./docker/Core_food/nginx/conf:/etc/nginx/conf.d
       - ./docker/Core_food/ssl:/etc/ssl
-      - ./config/workspace/Core_food:/var/www/html/Core_food
+      - ./project/:/var/www/html/
 
   # php-fpm
   php-fpm:
@@ -50,7 +43,6 @@ services:
     container_name: php
     networks:
       - backend
-    #    image: php:7.3-fpm
     expose:
       - 9000
     tty: true
@@ -59,7 +51,7 @@ services:
       - ./docker/Core_food/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       - ./docker/Core_food/php/php-fpm.d:/usr/local/etc/php-fpm.d
       - ./docker/Core_food/ssl:/etc/ssl
-      - ./config/workspace/Core_food:/var/www/html/Core_food
+      - ./project/:/var/www/html/
 
   # database
   database:
